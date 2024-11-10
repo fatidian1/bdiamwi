@@ -1,28 +1,8 @@
 import Image from "next/image";
-import {getDatabase} from '@/data-source';
-import {User} from '@/entity/user';
-import {getSession} from '@/app/lib/session';
+import {getUser} from '@/utils/userUtils';
 
 export default async function Home() {
-
-  const getUsername = async () => {
-    const session = await getSession()
-    if (!session) return null
-// return  null;
-    try {
-      const db = await getDatabase();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      const data = await db.manager.find(User, {where: {id: session.userId}})
-
-      return data[0].username
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      console.log('Failed to fetch user')
-      return null
-    }
-  }
-  const username = await getUsername();
+  const username = (await getUser())?.username;
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -53,6 +33,32 @@ export default async function Home() {
               height={20}
             />
             Logout
+          </a>
+          <a
+            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
+            href="/api/delete-account"
+          >
+            <Image
+              className="dark:invert"
+              src="/vercel.svg"
+              alt="Vercel logomark"
+              width={20}
+              height={20}
+            />
+            Remove account
+          </a>
+          <a
+            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
+            href="/change-password"
+          >
+            <Image
+              className="dark:invert"
+              src="/vercel.svg"
+              alt="Vercel logomark"
+              width={20}
+              height={20}
+            />
+            Change password
           </a>
         </div>
       </main>

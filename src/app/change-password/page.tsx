@@ -2,10 +2,12 @@
 import {FormEventHandler, useState} from 'react';
 import {useRouter} from 'next/navigation';
 
-export default function Login() {
-  const [username, setUsername] = useState<string>('');
+export default function Signup() {
+  const [currentPassword, setCurrentPassword] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
@@ -13,22 +15,31 @@ export default function Login() {
     e.preventDefault();
     if (isLoading) return;
     setErrorMessage(null);
+    setSuccessMessage(null);
+
+    // Basic client-side validation
+    if (password !== confirmPassword) {
+      setErrorMessage('Passwords do not match.');
+      return;
+    }
     setIsLoading(true);
 
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({username, password}),
-    });
-
     try {
+      const res = await fetch('/api/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({newPassword: password, password: currentPassword}),
+      });
+
       const data = await res.json();
 
       if (data.success) {
-        // Redirect on success
-        router.push('/'); // Redirect to your protected page
+        setSuccessMessage(data.message);
+        setCurrentPassword('');
+        setPassword('');
+        setConfirmPassword('');
       } else {
         setErrorMessage(data.message);
       }
@@ -43,7 +54,13 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-4 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800">Login</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-800">Change Password</h2>
+
+        {successMessage && (
+          <div className="p-2 text-green-700 bg-green-100 border border-green-200 rounded">
+            {successMessage}
+          </div>
+        )}
 
         {errorMessage && (
           <div className="p-2 text-red-700 bg-red-100 border border-red-200 rounded">
@@ -53,22 +70,33 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-600">Username</label>
+            <label className="block mb-2 text-sm font-medium text-gray-600">Current Password</label>
             <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
               required
               className="w-full px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 text-black"
             />
           </div>
 
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-600">Password</label>
+            <label className="block mb-2 text-sm font-medium text-gray-600">New Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 text-black"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-600">Confirm New Password</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
               className="w-full px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 text-black"
             />
@@ -101,13 +129,13 @@ export default function Login() {
                 ></path>
               </svg>
             ) : null}
-            {isLoading ? 'Logging In...' : 'Log In'}
+            {isLoading ? 'Changing Password...' : 'Change Password'}
           </button>
 
-          <a href="/signup">
+          <a href="/dashboard">
             <div
               className="w-full mt-4 text-center px-4 py-2 font-semibold text-white bg-indigo-500 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              Go to signup
+              Back to dashboard
             </div>
           </a>
         </form>
