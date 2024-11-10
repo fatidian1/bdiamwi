@@ -1,7 +1,8 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
+## Requirements
+You need to have [Node.js](https://nodejs.org/en/download/package-manager) installed to run the project.
 ## Getting Started
-First, you need to create `.env` file in project root directory. Example below:
+After installing packages (`npm install`), you need to create `.env` file in project root directory. Example below:
 ```dotenv
 DATABASE_HOSTNAME=localhost
 DATABASE_PORT=5432
@@ -10,7 +11,7 @@ DATABASE_PASSWORD=development
 DATABASE_NAME=bdiamwi
 SESSION_SECRET=YInrtgTK/DaUN5SCoNasJXno/77St5ljpfTsFeKXGWU=
 ```
-Second, run the development server:
+Then, run the development server:
 
 ```bash
 npm run dev
