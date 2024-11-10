@@ -1,8 +1,16 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
-
-First, run the development server:
+First, you need to create `.env` file in project root directory. Example below:
+```dotenv
+DATABASE_HOSTNAME=localhost
+DATABASE_PORT=5432
+DATABASE_USERNAME=development
+DATABASE_PASSWORD=development
+DATABASE_NAME=bdiamwi
+SESSION_SECRET=YInrtgTK/DaUN5SCoNasJXno/77St5ljpfTsFeKXGWU=
+```
+Second, run the development server:
 
 ```bash
 npm run dev
@@ -13,6 +21,7 @@ pnpm dev
 # or
 bun dev
 ```
+Database schema is created automatically.
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
